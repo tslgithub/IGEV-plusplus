@@ -4,9 +4,6 @@ import torch.nn.functional as F
 from core.submodule import *
 import timm
 
-
-
-
 class ResidualBlock(nn.Module):
     def __init__(self, in_planes, planes, norm_fn='group', stride=1):
         super(ResidualBlock, self).__init__()
@@ -72,7 +69,7 @@ class BottleneckBlock(nn.Module):
         self.conv1 = nn.Conv2d(in_planes, planes//4, kernel_size=1, padding=0)
         self.conv2 = nn.Conv2d(planes//4, planes//4, kernel_size=3, padding=1, stride=stride)
         self.conv3 = nn.Conv2d(planes//4, planes, kernel_size=1, padding=0)
-        self.relu = nn.ReLU(inplace=True)
+        self.relu  = nn.ReLU(inplace=True)
 
         num_groups = planes // 8
 
@@ -219,9 +216,9 @@ class MultiBasicEncoder(nn.Module):
         self.relu1 = nn.ReLU(inplace=True)
 
         self.in_planes = 64
-        self.layer1 = self._make_layer(64, stride=1)
-        self.layer2 = self._make_layer(96, stride=1 + (downsample > 1))
-        self.layer3 = self._make_layer(128, stride=1 + (downsample > 0))
+        self.layer1 = self._make_layer(64,  stride=1)
+        self.layer2 = self._make_layer(96,  stride=1  + (downsample > 1))
+        self.layer3 = self._make_layer(128, stride=1  + (downsample > 0))
         self.layer4 = self._make_layer(128, stride=2)
         self.layer5 = self._make_layer(128, stride=2)
 
@@ -326,6 +323,7 @@ class Feature(SubModule):
         super(Feature, self).__init__()
         pretrained =  True
         model = timm.create_model('mobilenetv2_100', pretrained=pretrained, features_only=True)
+        
         layers = [1,2,3,5,6]
         chans = [16, 24, 32, 96, 160]
         self.conv_stem = model.conv_stem
